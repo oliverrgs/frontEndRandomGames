@@ -1,0 +1,108 @@
+<html>
+<head>
+<script type="text/javascript" src="./jquery-1.11.1.min.js" ></script>
+<style type="text/css">
+	.snake {background-color:green;width:10px;height:10px;}
+	.field {width:1000px;height:1000px;border:1px solid black;position:relative;}
+	.apple {background-color:red;width:10px;height:10px;z-index:99;}
+</style>
+<script type="text/javascript">
+var direction="right";
+var xwidth=10;
+var ywidth=10;
+var fieldWidth=1000;
+var spd=7.5;
+var snake=new Array();
+snake.push({left:xwidth,top:xwidth,dir:direction});
+$(document).ready(function(){
+	setInterval(function(){gamestate();},10);
+});
+$(document).on("keypress", function (e) {
+	if(e.keyCode==119)direction="up";
+	if(e.keyCode==97)direction="left";
+	if(e.keyCode==115)direction="down";
+	if(e.keyCode==100)direction="right";
+});
+var counter=0;
+var maxlength=5;
+function lose(){
+alert("You lose");
+maxlength=5;
+snake=new Array();
+snake.push({left:xwidth,top:xwidth,dir:direction});
+direction="right";
+	applex=null;
+	appley=null;
+}
+var applex=null;
+var appley=null;
+function randomApple(){
+	if(applex==null){
+		applex=Math.floor(Math.random()*fieldWidth/ywidth)*ywidth;
+		appley=Math.floor(Math.random()*fieldWidth/ywidth)*ywidth;
+	}
+		$(".field").append(
+			"<div class=\"apple\" style=\"position:absolute;left:"+applex+";top:"+appley+";\"></div>"
+			);
+	
+}
+function eat(){
+	maxlength+=3;
+	applex=null;
+	appley=null;
+}
+function head(){
+	return snake[snake.length-1];
+}
+function gamestate(){
+counter++;
+$(".field").html("");
+
+randomApple()
+	if((counter*spd)>ywidth){
+		counter=0;
+		var newhead={
+			left:head().left,
+			top:head().top,
+			dir:direction
+		};
+		if(		(head().dir=="up"&&newhead.dir=="down")
+			|| (head().dir=="down" &&newhead.dir=="up")
+			|| (head().dir=="left"&&newhead.dir=="right")
+			|| (head().dir=="right"&&newhead.dir=="left")
+		)newhead.dir=head().dir;
+		snake.push(newhead);
+		if(newhead.dir=="up")newhead.top+=(0-1)*ywidth;
+		if(newhead.dir=="left")newhead.left+=(0-1)*ywidth;
+		if(newhead.dir=="right")newhead.left+=ywidth;
+		if(newhead.dir=="down")newhead.top+=ywidth;
+		if(newhead.left<0 || newhead.top<0 || newhead.left>= fieldWidth || newhead.top>=fieldWidth)
+			lose();
+		if(newhead.left==applex && newhead.top==appley){
+			eat();
+		}
+		while(snake.length>maxlength)snake.shift();
+	}
+	$(snake).each(function(i,obj){
+		$(snake).each(function(it,othersnake){
+			if(i!=it && obj.left==othersnake.left && obj.top == othersnake.top){
+				lose();
+			}
+			
+		});
+	$(".inputTxt").val(direction);
+		$(".field").append(
+			"<div class=\"snake\" style=\"position:absolute;left:"+obj.left+";top:"+obj.top+";\"></div>"
+			);
+	});
+}
+</script>
+</head>
+<body>
+<marquee>SNAKE</marquee>
+<br/><br/>
+<div class="field">
+</div>
+<input class="inputTxt"/>
+</body>
+</html>
